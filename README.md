@@ -11,6 +11,36 @@ A modern, full-stack enterprise web platform connecting property seekers with ve
 
 ---
 
+## 📸 Screenshots & UI Showcase
+
+<p align="center">
+  <img src="docs/screenshots/01_home_page.png" alt="Home Page" width="100%">
+</p>
+
+<details open>
+<summary><b>🖼️ Click to expand full platform walkthrough & views</b></summary>
+<br>
+
+| 1. Find & Filter Agents | 2. Agent Profile & Booking Modal |
+| :---: | :---: |
+| <img src="docs/screenshots/02_find_agents.png" width="100%" alt="Find Agents"> | <img src="docs/screenshots/03_agent_profile_booking.png" width="100%" alt="Agent Profile"> |
+
+| 3. Property Catalog (Bubble Sort) | 4. Property Details & Specs |
+| :---: | :---: |
+| <img src="docs/screenshots/04_property_catalog.png" width="100%" alt="Property Catalog"> | <img src="docs/screenshots/05_property_details.png" width="100%" alt="Property Details"> |
+
+| 5. Client Appointments Dashboard | 6. Agent Request Queue Portal |
+| :---: | :---: |
+| <img src="docs/screenshots/06_client_dashboard.png" width="100%" alt="Client Dashboard"> | <img src="docs/screenshots/07_agent_dashboard.png" width="100%" alt="Agent Dashboard"> |
+
+| 7. Admin Control Center | 8. Dark Mode Luxury Aesthetic |
+| :---: | :---: |
+| <img src="docs/screenshots/08_admin_dashboard.png" width="100%" alt="Admin Dashboard"> | <img src="docs/screenshots/09_dark_mode_theme.png" width="100%" alt="Dark Mode Theme"> |
+
+</details>
+
+---
+
 ## 🌟 Key Features
 
 ### 1. 🛡️ Role-Based Access Control (RBAC) & Security
