@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Manage Agents - Admin')}"></head>
+<body class="bg-light">
+
+<!-- Admin Top Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-3 shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" th:href="@{/admin/dashboard}">
+            <i class="bi bi-buildings-fill text-warning"></i> Real Estate Agent Finder
+        </a>
+        <div class="navbar-nav me-auto">
+            <a class="nav-link fw-semibold" th:href="@{/admin/dashboard}">Dashboard</a>
+            <a class="nav-link active fw-semibold" th:href="@{/admin/agents}">Manage Agents</a>
+            <a class="nav-link fw-semibold" th:href="@{/admin/appointments}">Appointments</a>
+        </div>
+        <div class="navbar-nav">
+            <a class="nav-link text-white" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container-fluid px-4 my-4">
+    <!-- Header with Search matching SLIIT UI -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Manage Agents</h2>
+            <p class="text-muted small">Review and manage agent accounts</p>
+        </div>
+        <form th:action="@{/admin/agents}" method="get" class="d-flex gap-2">
+            <input type="text" name="keyword" th:value="${keyword}" class="form-control form-control-sm" placeholder="Search agents..." style="width: 250px;">
+            <button type="submit" class="btn btn-outline-primary btn-sm">Search</button>
+        </form>
+    </div>
+
+    <!-- Agents by Specialization Panel -->
+    <div class="custom-card p-4 mb-4">
+        <h5 class="fw-bold mb-3">All Agents Directory</h5>
+
+        <div th:if="${#lists.isEmpty(agents)}" class="alert alert-info py-3 mb-0">
+            <i class="bi bi-info-circle me-1"></i> No agents found.
+        </div>
+
+        <div class="table-responsive" th:unless="${#lists.isEmpty(agents)}">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Agent Name</th>
+                        <th>Email & Contact</th>
+                        <th>License #</th>
+                        <th>Specialization</th>
+                        <th>Experience</th>
+                        <th>Rating</th>
+                        <th>Verification Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="agent : ${agents}">
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img th:src="${agent.profilePicture}" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+                                <strong class="text-dark" th:text="${agent.name}">Name</strong>
+                            </div>
+                        </td>
+                        <td>
+                            <div th:text="${agent.email}">email</div>
+                            <small class="text-muted" th:text="${agent.contactNumber}">phone</small>
+                        </td>
+                        <td><code th:text="${agent.licenseNumber}">LIC</code></td>
+                        <td><span class="badge bg-primary-subtle text-primary border" th:text="${agent.specialization.displayName}">Spec</span></td>
+                        <td><span th:text="${agent.yearsOfExperience}">5</span> yrs</td>
+                        <td><span class="text-warning">★</span> <strong th:text="${agent.rating}">4.9</strong></td>
+                        <td>
+                            <span th:if="${agent.verified}" class="badge bg-success">Verified</span>
+                            <span th:unless="${agent.verified}" class="badge bg-warning text-dark">Unverified</span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <form th:if="${!agent.verified}" th:action="@{'/admin/agents/' + ${agent.id} + '/verify'}" method="post">
+                                    <input type="hidden" name="verified" value="true">
+                                    <button type="submit" class="btn btn-success btn-sm" title="Approve Verification"><i class="bi bi-check-lg"></i> Verify</button>
+                                </form>
+                                <form th:if="${agent.verified}" th:action="@{'/admin/agents/' + ${agent.id} + '/verify'}" method="post">
+                                    <input type="hidden" name="verified" value="false">
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm" title="Revoke Verification"><i class="bi bi-x-circle"></i> Revoke</button>
+                                </form>
+                                <form th:action="@{'/admin/users/' + ${agent.id} + '/delete'}" method="post" onsubmit="return confirm('Are you sure you want to deactivate and remove this agent account?');">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete Account"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

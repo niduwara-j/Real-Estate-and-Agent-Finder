@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${agent.name} + ' - Agent Profile')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Agent Overview Sidebar -->
+        <div class="col-lg-4">
+            <div class="custom-card p-4 text-center sticky-top" style="top: 90px;">
+                <div class="position-relative d-inline-block mx-auto mb-3">
+                    <img th:src="${agent.profilePicture}" th:alt="${agent.name}" class="agent-avatar-lg">
+                    <span th:if="${agent.verified}" class="position-absolute bottom-0 end-0 bg-success text-white rounded-circle p-2" title="Verified Professional">
+                        <i class="bi bi-check-lg fs-5"></i>
+                    </span>
+                </div>
+
+                <h4 class="fw-bold mb-1" th:text="${agent.name}">Sarah Johnson</h4>
+                <p class="text-primary fw-semibold mb-2" th:text="${agent.specialization.displayName}">Residential Specialist</p>
+
+                <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+                    <span class="star-rating fs-5">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span class="fw-bold text-dark ms-1" th:text="${agent.rating}">4.9</span>
+                    </span>
+                    <span class="text-muted small" th:text="'(' + ${agent.reviewCount} + ' reviews)'">(12)</span>
+                </div>
+
+                <div class="d-flex justify-content-center gap-2 mb-4">
+                    <span th:if="${agent.verified}" class="badge-verified"><i class="bi bi-patch-check-fill"></i> Verified Agent</span>
+                    <span th:if="${agent.available}" class="badge-available"><i class="bi bi-circle-fill small text-success"></i> Available</span>
+                    <span th:unless="${agent.available}" class="badge bg-secondary"><i class="bi bi-circle-fill small"></i> Busy</span>
+                </div>
+
+                <div class="text-start border-top pt-3 mb-4 small">
+                    <div class="mb-2"><i class="bi bi-award text-primary me-2"></i><strong>License:</strong> <span th:text="${agent.licenseNumber}">RE-2023-891</span></div>
+                    <div class="mb-2"><i class="bi bi-briefcase text-primary me-2"></i><strong>Experience:</strong> <span th:text="${agent.yearsOfExperience}">8</span> Years</div>
+                    <div class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i><strong>Service Areas:</strong> <span th:text="${agent.serviceAreas}">Malabe, Colombo</span></div>
+                    <div class="mb-2"><i class="bi bi-envelope text-primary me-2"></i><strong>Email:</strong> <span th:text="${agent.email}">agent@realestate.com</span></div>
+                    <div><i class="bi bi-telephone text-primary me-2"></i><strong>Phone:</strong> <span th:text="${agent.contactNumber}">+94 77 123 4567</span></div>
+                </div>
+
+                <!-- Book Appointment Button (Triggers Modal) -->
+                <button type="button" class="btn btn-primary w-100 fw-bold py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#bookModal">
+                    <i class="bi bi-calendar-check"></i> Book an Appointment
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Details: Bio, Properties, Reviews -->
+        <div class="col-lg-8">
+            <!-- About Section -->
+            <div class="custom-card p-4 mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-person-lines-fill text-primary"></i> About <span th:text="${agent.name}">Agent</span></h5>
+                <p class="text-muted" th:text="${agent.bio != null ? agent.bio : 'Experienced real estate advisor committed to client satisfaction and smooth property transactions.'}">Bio</p>
+            </div>
+
+            <!-- Agent's Property Listings -->
+            <div class="custom-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-building text-primary"></i> Active Listings (<span th:text="${#lists.size(properties)}">0</span>)</h5>
+                </div>
+
+                <div th:if="${#lists.isEmpty(properties)}" class="text-muted small py-3 text-center">
+                    No active property listings currently listed by this agent.
+                </div>
+
+                <div class="row g-3" th:unless="${#lists.isEmpty(properties)}">
+                    <div class="col-md-6" th:each="prop : ${properties}">
+                        <div class="border rounded-3 overflow-hidden h-100 d-flex flex-column">
+                            <img th:src="${prop.imageUrl}" th:alt="${prop.title}" class="property-img" style="height: 160px;">
+                            <div class="p-3 flex-grow-1 d-flex flex-column">
+                                <div class="property-price small mb-1" th:text="'LKR ' + ${#numbers.formatDecimal(prop.price, 0, 'COMMA', 0, 'POINT')}">LKR 45,000,000</div>
+                                <h6 class="fw-bold text-truncate mb-1" th:text="${prop.title}">Title</h6>
+                                <p class="text-muted small mb-2"><i class="bi bi-geo-alt"></i> <span th:text="${prop.city}">City</span></p>
+                                <a th:href="@{'/properties/' + ${prop.id}}" class="btn btn-outline-primary btn-sm mt-auto">View Listing</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews and Ratings Section -->
+            <div class="custom-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-star text-warning"></i> Client Reviews (<span th:text="${#lists.size(feedbacks)}">0</span>)</h5>
+                    <button class="btn btn-outline-warning text-dark btn-sm fw-semibold" data-bs-toggle="collapse" data-bs-target="#reviewFormCollapse">
+                        <i class="bi bi-pencil-square"></i> Leave a Review
+                    </button>
+                </div>
+
+                <!-- Review Form (Collapsed by default) -->
+                <div class="collapse mb-4" id="reviewFormCollapse">
+                    <div class="bg-light p-4 rounded-3 border">
+                        <h6 class="fw-bold mb-3">Write Feedback for <span th:text="${agent.name}">Agent</span></h6>
+                        <form th:action="@{/feedbacks/submit}" method="post">
+                            <input type="hidden" name="agentId" th:value="${agent.id}">
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Rating (1 to 5 Stars)</label>
+                                <select name="rating" class="form-select" required>
+                                    <option value="5">★★★★★ - Excellent (5 Stars)</option>
+                                    <option value="4">★★★★☆ - Very Good (4 Stars)</option>
+                                    <option value="3">★★★☆☆ - Average (3 Stars)</option>
+                                    <option value="2">★★☆☆☆ - Poor (2 Stars)</option>
+                                    <option value="1">★☆☆☆☆ - Terrible (1 Star)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Your Comments / Experience</label>
+                                <textarea name="comments" rows="3" class="form-control" placeholder="Share your experience working with this agent..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm fw-bold">Submit Review</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- List of reviews -->
+                <div th:if="${#lists.isEmpty(feedbacks)}" class="text-muted small py-3 text-center">
+                    No reviews yet. Be the first to leave feedback!
+                </div>
+
+                <div class="d-flex flex-column gap-3" th:unless="${#lists.isEmpty(feedbacks)}">
+                    <div class="border-bottom pb-3" th:each="fb : ${feedbacks}">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong th:text="${fb.client.name}">Client Name</strong>
+                            <span class="text-warning" th:text="${fb.stars}">★★★★★</span>
+                        </div>
+                        <p class="text-muted small mb-1" th:text="${fb.comments}">Comment text...</p>
+                        <small class="text-muted" style="font-size: 0.75rem;" th:text="${#temporals.format(fb.createdAt, 'MMM dd, yyyy')}">Jan 01, 2026</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Book Appointment Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold"><i class="bi bi-calendar-event"></i> Book Appointment</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form th:action="@{/appointments/book}" method="post">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="agentId" th:value="${agent.id}">
+                    <p class="small text-muted mb-3">Schedule a private consultation or property viewing with <strong><span th:text="${agent.name}">Agent</span></strong>.</p>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Preferred Date *</label>
+                        <input type="date" name="appointmentDate" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Preferred Time Slot *</label>
+                        <input type="time" name="appointmentTime" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Notes / Properties of Interest</label>
+                        <textarea name="notes" rows="3" class="form-control" placeholder="e.g. Interested in viewing the Malabe Villa, looking to buy this month."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold">Confirm & Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

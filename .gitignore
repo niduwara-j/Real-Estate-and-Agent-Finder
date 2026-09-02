@@ -3,11 +3,14 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Database & Generated Data ###
+data/*.db
+data/*.mv.db
+data/*.trace.db
+data/realestate_db*
+
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -21,18 +24,10 @@ target/
 .springBeans
 .sts4-cache
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
+### Logs & OS ###
+*.log
 .DS_Store
+Thumbs.db

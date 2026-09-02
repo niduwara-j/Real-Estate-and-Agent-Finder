@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin Control Panel')}"></head>
+<body class="bg-light">
+
+<!-- Admin Top Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-3 shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" th:href="@{/admin/dashboard}">
+            <i class="bi bi-buildings-fill text-warning"></i> Real Estate Agent Finder
+        </a>
+        <div class="navbar-nav me-auto">
+            <a class="nav-link active fw-semibold" th:href="@{/admin/dashboard}">Dashboard</a>
+            <a class="nav-link fw-semibold" th:href="@{/admin/agents}">Manage Agents</a>
+            <a class="nav-link fw-semibold" th:href="@{/admin/appointments}">Appointments</a>
+        </div>
+        <div class="navbar-nav">
+            <a class="nav-link text-white" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container-fluid px-4 my-4">
+    <!-- Header Title -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">Admin Dashboard</h2>
+        <p class="text-muted small">Welcome to the admin control panel</p>
+    </div>
+
+    <!-- 4 Stats Cards matching SLIIT UI -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="stat-card blue">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 fw-medium opacity-90">Total Agents</p>
+                        <h3 th:text="${totalAgents}">0</h3>
+                    </div>
+                    <i class="bi bi-person-badge fs-1 opacity-75"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card green">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 fw-medium opacity-90">Verified Agents</p>
+                        <h3 th:text="${verifiedAgents}">0</h3>
+                    </div>
+                    <i class="bi bi-patch-check fs-1 opacity-75"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card cyan">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 fw-medium opacity-90">Available Agents</p>
+                        <h3 th:text="${availableAgents}">0</h3>
+                    </div>
+                    <i class="bi bi-person-check fs-1 opacity-75"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card yellow">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-1 fw-medium opacity-90">Appointments</p>
+                        <h3 th:text="${totalAppointments}">0</h3>
+                    </div>
+                    <i class="bi bi-calendar-check fs-1 opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Panels -->
+    <div class="row g-4">
+        <!-- Agents Awaiting Verification -->
+        <div class="col-lg-7">
+            <div class="custom-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-primary">Agents Awaiting Verification</h5>
+                    <span class="badge bg-warning text-dark px-3 py-1 rounded-pill" th:text="${#lists.size(agentsAwaitingVerification)} + ' Pending'">0 Pending</span>
+                </div>
+
+                <div th:if="${#lists.isEmpty(agentsAwaitingVerification)}" class="alert alert-info py-3 mb-0">
+                    <i class="bi bi-info-circle me-1"></i> No agents waiting for verification.
+                </div>
+
+                <div class="table-responsive" th:unless="${#lists.isEmpty(agentsAwaitingVerification)}">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Agent</th>
+                                <th>License #</th>
+                                <th>Specialization</th>
+                                <th>Experience</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="agent : ${agentsAwaitingVerification}">
+                                <td>
+                                    <strong class="d-block text-dark" th:text="${agent.name}">Agent Name</strong>
+                                    <small class="text-muted" th:text="${agent.email}">agent@example.com</small>
+                                </td>
+                                <td><code th:text="${agent.licenseNumber}">LIC-001</code></td>
+                                <td><span class="badge bg-light text-dark border" th:text="${agent.specialization.displayName}">Residential</span></td>
+                                <td><span th:text="${agent.yearsOfExperience}">3</span> yrs</td>
+                                <td>
+                                    <form th:action="@{'/admin/agents/' + ${agent.id} + '/verify'}" method="post" class="d-inline">
+                                        <input type="hidden" name="verified" value="true">
+                                        <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check-lg"></i> Approve</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Verified Agents List -->
+            <div class="custom-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-success">Verified Agents Directory</h5>
+                    <a th:href="@{/admin/agents}" class="btn btn-outline-primary btn-sm">Manage All</a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(verifiedAgentsList)}" class="alert alert-info py-3 mb-0">
+                    <i class="bi bi-info-circle me-1"></i> No verified agents found.
+                </div>
+
+                <div class="table-responsive" th:unless="${#lists.isEmpty(verifiedAgentsList)}">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Agent</th>
+                                <th>Specialization</th>
+                                <th>Rating</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="agent : ${verifiedAgentsList}">
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img th:src="${agent.profilePicture}" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                                        <strong th:text="${agent.name}">Agent</strong>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-primary-subtle text-primary border" th:text="${agent.specialization.displayName}">Specialty</span></td>
+                                <td><span class="text-warning">★</span> <strong th:text="${agent.rating}">4.9</strong></td>
+                                <td>
+                                    <span th:if="${agent.available}" class="badge bg-success">Available</span>
+                                    <span th:unless="${agent.available}" class="badge bg-secondary">Busy</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Appointments -->
+        <div class="col-lg-5">
+            <div class="custom-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-warning">Upcoming Appointments</h5>
+                    <a th:href="@{/admin/appointments}" class="btn btn-outline-secondary btn-sm">View All</a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(upcomingAppointments)}" class="alert alert-info py-3 mb-0">
+                    <i class="bi bi-info-circle me-1"></i> No upcoming appointments.
+                </div>
+
+                <div class="d-flex flex-column gap-3" th:unless="${#lists.isEmpty(upcomingAppointments)}">
+                    <div class="border rounded-3 p-3 bg-white" th:each="app : ${upcomingAppointments}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <strong class="d-block" th:text="${app.client.name}">Client</strong>
+                                <small class="text-muted">with <span class="fw-semibold text-primary" th:text="${app.agent.name}">Agent</span></small>
+                            </div>
+                            <span th:if="${app.status.name() == 'CONFIRMED'}" class="badge bg-success">Confirmed</span>
+                            <span th:if="${app.status.name() == 'PENDING'}" class="badge bg-warning text-dark">Pending</span>
+                            <span th:if="${app.status.name() == 'COMPLETED'}" class="badge bg-primary">Completed</span>
+                            <span th:if="${app.status.name() == 'CANCELLED'}" class="badge bg-danger">Cancelled</span>
+                        </div>
+                        <div class="small text-muted d-flex justify-content-between pt-2 border-top">
+                            <span><i class="bi bi-calendar"></i> <span th:text="${#temporals.format(app.appointmentDate, 'MMM dd, yyyy')}">Date</span></span>
+                            <span><i class="bi bi-clock"></i> <span th:text="${app.appointmentTime}">10:30</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

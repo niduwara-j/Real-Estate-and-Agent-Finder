@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Luxury Properties & Verified Real Estate Agents')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <span class="badge bg-white text-primary px-3 py-2 rounded-pill fw-bold mb-3 shadow-sm">
+            <i class="bi bi-patch-check-fill text-primary"></i> #1 Trusted Real Estate Network
+        </span>
+        <h1 class="display-4 fw-extrabold mb-3 text-white">Find Your Perfect Real Estate Agent</h1>
+        <p class="lead text-light opacity-90 mx-auto mb-4" style="max-width: 680px;">
+            Connect with verified real estate specialists and explore exclusive luxury listings across the country.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="hero-search-box text-dark">
+            <form th:action="@{/agents}" method="get" class="row g-2 align-items-center">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-geo-alt-fill text-primary"></i></span>
+                        <input type="text" name="keyword" class="form-control border-start-0" placeholder="City or Area (e.g. Malabe, Colombo)">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-award-fill text-primary"></i></span>
+                        <select name="spec" class="form-select border-start-0">
+                            <option value="">All Specializations</option>
+                            <option th:each="spec : ${specializations}" th:value="${spec}" th:text="${spec.displayName}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm rounded-3">
+                        <i class="bi bi-search"></i> Search Agents
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Platform Statistics Section -->
+<section class="container my-5">
+    <div class="row g-3">
+        <div class="col-md-3 col-6">
+            <div class="stat-card blue">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 th:text="${totalAgents}">0</h3>
+                        <p class="mb-0 fw-medium opacity-90">Expert Agents</p>
+                    </div>
+                    <i class="bi bi-person-badge fs-1 opacity-75"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card green">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 th:text="${verifiedAgents}">0</h3>
+                        <p class="mb-0 fw-medium opacity-90">Verified Profiles</p>
+                    </div>
+                    <i class="bi bi-patch-check fs-1 opacity-75"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card cyan">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 th:text="${totalProperties}">0</h3>
+                        <p class="mb-0 fw-medium opacity-90">Prime Listings</p>
+                    </div>
+                    <i class="bi bi-building fs-1 opacity-75"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card yellow">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 th:text="${totalAppointments}">0</h3>
+                        <p class="mb-0 fw-medium opacity-90">Consultations</p>
+                    </div>
+                    <i class="bi bi-calendar-check fs-1 opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Verified Agents -->
+<section class="container my-5">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <span class="text-primary fw-bold text-uppercase small tracking-wide">Top Rated Experts</span>
+            <h2 class="fw-extrabold mb-0">Featured Real Estate Agents</h2>
+        </div>
+        <a th:href="@{/agents}" class="btn btn-outline-primary fw-semibold rounded-pill px-4">
+            View All Agents <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4 col-sm-6" th:each="agent : ${featuredAgents}">
+            <div class="custom-card h-100 p-4 text-center d-flex flex-column">
+                <div class="position-relative d-inline-block mx-auto mb-3">
+                    <img th:src="${agent.profilePicture}" th:alt="${agent.name}" class="agent-avatar">
+                    <span th:if="${agent.verified}" class="position-absolute bottom-0 end-0 bg-success text-white rounded-circle px-1" title="Verified Agent">
+                        <i class="bi bi-check fs-6"></i>
+                    </span>
+                </div>
+                <h5 class="fw-bold mb-1" th:text="${agent.name}">Agent Name</h5>
+                <p class="text-muted small mb-2" th:text="${agent.specialization.displayName}">Residential</p>
+                <div class="mb-3">
+                    <span class="star-rating">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span class="fw-bold text-dark ms-1" th:text="${agent.rating}">4.9</span>
+                    </span>
+                    <span class="text-muted small" th:text="'(' + ${agent.reviewCount} + ' reviews)'">(12)</span>
+                </div>
+                <p class="small text-muted flex-grow-1 text-truncate-2" th:text="${agent.bio}">Bio snippet...</p>
+                <div class="small bg-light p-2 rounded mb-3 text-muted">
+                    <i class="bi bi-geo-alt text-danger"></i> <span th:text="${agent.serviceAreas}">Colombo, Malabe</span>
+                </div>
+                <a th:href="@{'/agents/' + ${agent.id}}" class="btn btn-primary fw-semibold w-100 rounded-3">
+                    <i class="bi bi-calendar-event"></i> View Profile & Book
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Properties -->
+<section class="container my-5">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <span class="text-primary fw-bold text-uppercase small tracking-wide">Exclusive Listings</span>
+            <h2 class="fw-extrabold mb-0">Featured Properties</h2>
+        </div>
+        <a th:href="@{/properties}" class="btn btn-outline-primary fw-semibold rounded-pill px-4">
+            Explore All Properties <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-3 col-sm-6" th:each="prop : ${recentProperties}">
+            <div class="custom-card h-100 d-flex flex-column">
+                <div class="position-relative">
+                    <img th:src="${prop.imageUrl}" th:alt="${prop.title}" class="property-img">
+                    <span class="badge bg-primary position-absolute top-0 end-0 m-2 fw-semibold" th:text="${prop.propertyType}">VILLA</span>
+                </div>
+                <div class="p-3 d-flex flex-column flex-grow-1">
+                    <div class="property-price mb-1" th:text="'LKR ' + ${#numbers.formatDecimal(prop.price, 0, 'COMMA', 0, 'POINT')}">LKR 45,000,000</div>
+                    <h6 class="fw-bold text-truncate mb-1" th:text="${prop.title}">Property Title</h6>
+                    <p class="text-muted small mb-3"><i class="bi bi-geo-alt text-danger"></i> <span th:text="${prop.city} + ', ' + ${prop.address}">Malabe</span></p>
+                    <div class="d-flex justify-content-between small text-muted border-top pt-2 mt-auto">
+                        <span><i class="bi bi-door-closed"></i> <span th:text="${prop.bedrooms}">3</span> Beds</span>
+                        <span><i class="bi bi-droplet"></i> <span th:text="${prop.bathrooms}">2</span> Baths</span>
+                        <span><i class="bi bi-arrows-fullscreen"></i> <span th:text="${prop.areaSqFt}">1800</span> sqft</span>
+                    </div>
+                </div>
+                <div class="p-3 pt-0">
+                    <a th:href="@{'/properties/' + ${prop.id}}" class="btn btn-outline-primary btn-sm w-100 fw-semibold rounded-3">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us / Value Proposition Section -->
+<section class="container my-5 py-4">
+    <div class="text-center mb-5">
+        <span class="badge bg-primary-subtle text-primary fw-bold text-uppercase px-3 py-2 rounded-pill mb-2">How It Works</span>
+        <h2 class="fw-extrabold">Seamless Real Estate Experience</h2>
+        <p class="text-muted small mx-auto" style="max-width: 550px;">From discovering certified agents to scheduling private tours, we simplify your entire property journey.</p>
+    </div>
+
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="custom-card p-4 h-100">
+                <div class="feature-icon-wrapper mb-3 text-primary">
+                    <i class="bi bi-search fs-1"></i>
+                </div>
+                <h5 class="fw-bold mb-2">1. Discover Top Agents</h5>
+                <p class="text-muted small mb-0">Search through certified real estate advisors specialized in residential, commercial, and luxury properties.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="custom-card p-4 h-100">
+                <div class="feature-icon-wrapper mb-3 text-success">
+                    <i class="bi bi-calendar2-check fs-1"></i>
+                </div>
+                <h5 class="fw-bold mb-2">2. Schedule Consultations</h5>
+                <p class="text-muted small mb-0">Book property viewings and advisory sessions directly with your chosen agent at your preferred date and time.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="custom-card p-4 h-100">
+                <div class="feature-icon-wrapper mb-3 text-warning">
+                    <i class="bi bi-house-heart fs-1"></i>
+                </div>
+                <h5 class="fw-bold mb-2">3. Close Your Dream Deal</h5>
+                <p class="text-muted small mb-0">Get professional valuation, negotiation assistance, and guidance through to the final paperwork.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

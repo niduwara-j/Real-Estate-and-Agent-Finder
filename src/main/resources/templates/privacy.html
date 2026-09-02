@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Privacy Policy')}"></head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="custom-card p-4 p-md-5 shadow-sm">
+                <div class="mb-4 pb-3 border-bottom">
+                    <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">Legal Information</span>
+                    <h2 class="fw-extrabold mb-1">Privacy Policy</h2>
+                    <p class="text-muted small">Effective Date: January 1, 2026 | Last Updated: September 2026</p>
+                </div>
+
+                <div class="content leading-relaxed">
+                    <h5 class="fw-bold mb-3">1. Information We Collect</h5>
+                    <p>At Haven Real Estate Technologies, we respect your privacy and are committed to protecting your personal data. We collect personal details when you register as a Client or Real Estate Agent, including your full name, email address, phone number, property preferences, and real estate license credentials.</p>
+
+                    <h5 class="fw-bold mb-3 mt-4">2. How We Use Your Data</h5>
+                    <ul class="mb-4">
+                        <li>Facilitating seamless appointment scheduling between clients and real estate professionals.</li>
+                        <li>Verifying real estate agent licenses and professional credentials.</li>
+                        <li>Providing customized property recommendations and price filtering.</li>
+                        <li>Ensuring secure authentication and fraud prevention.</li>
+                    </ul>
+
+                    <h5 class="fw-bold mb-3 mt-4">3. Data Protection & Security</h5>
+                    <p>All sensitive user information and passwords are encrypted using one-way cryptographic hashing (<strong>BCrypt</strong>). We do not sell, rent, or trade your personal data to third parties for commercial advertising.</p>
+
+                    <h5 class="fw-bold mb-3 mt-4">4. Your Rights & Account Deletion</h5>
+                    <p>You have the right to review, update, or request the deletion of your account profile and appointment history at any time through your dashboard or by contacting our administration team.</p>
+
+                    <div class="mt-5 pt-3 border-top">
+                        <a th:href="@{/}" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                            <i class="bi bi-arrow-left"></i> Return to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

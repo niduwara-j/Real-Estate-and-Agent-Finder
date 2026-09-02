@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Terms of Service')}"></head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="custom-card p-4 p-md-5 shadow-sm">
+                <div class="mb-4 pb-3 border-bottom">
+                    <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">Legal Information</span>
+                    <h2 class="fw-extrabold mb-1">Terms of Service</h2>
+                    <p class="text-muted small">Effective Date: January 1, 2026 | Last Updated: September 2026</p>
+                </div>
+
+                <div class="content leading-relaxed">
+                    <h5 class="fw-bold mb-3">1. Acceptance of Terms</h5>
+                    <p>By accessing or registering on Haven Real Estate Platform, you agree to comply with these terms, governing user interactions, real estate listings, and appointment bookings.</p>
+
+                    <h5 class="fw-bold mb-3 mt-4">2. Real Estate Agent Responsibilities</h5>
+                    <ul class="mb-4">
+                        <li>Agents must provide accurate, verifiable license numbers and professional accreditation details.</li>
+                        <li>Property listings published by agents must reflect genuine prices, specifications, and availability.</li>
+                        <li>Agents are responsible for confirming or rescheduling client appointment inquiries in a timely manner.</li>
+                    </ul>
+
+                    <h5 class="fw-bold mb-3 mt-4">3. Client Booking & Review Guidelines</h5>
+                    <p>Clients agree to attend scheduled appointments or cancel in advance. All feedback and ratings submitted must reflect truthful and authentic experiences with real estate agents.</p>
+
+                    <h5 class="fw-bold mb-3 mt-4">4. Platform Role</h5>
+                    <p>Haven Real Estate provides the discovery and scheduling platform connecting buyers/tenants and independent agents. Real estate contracts, legal title verifications, and financial transactions are executed independently between parties.</p>
+
+                    <div class="mt-5 pt-3 border-top">
+                        <a th:href="@{/}" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                            <i class="bi bi-arrow-left"></i> Return to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

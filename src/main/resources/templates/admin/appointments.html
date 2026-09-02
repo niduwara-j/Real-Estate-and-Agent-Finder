@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Manage Appointments - Admin')}"></head>
+<body class="bg-light">
+
+<!-- Admin Top Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-3 shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" th:href="@{/admin/dashboard}">
+            <i class="bi bi-buildings-fill text-warning"></i> Real Estate Agent Finder
+        </a>
+        <div class="navbar-nav me-auto">
+            <a class="nav-link fw-semibold" th:href="@{/admin/dashboard}">Dashboard</a>
+            <a class="nav-link fw-semibold" th:href="@{/admin/agents}">Manage Agents</a>
+            <a class="nav-link active fw-semibold" th:href="@{/admin/appointments}">Appointments</a>
+        </div>
+        <div class="navbar-nav">
+            <a class="nav-link text-white" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container-fluid px-4 my-4">
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">Manage Appointments</h2>
+        <p class="text-muted small">View and manage all appointments across the system</p>
+    </div>
+
+    <div class="custom-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0">All System Appointments</h5>
+            <span class="badge bg-primary px-3 py-1 rounded-pill" th:text="${#lists.size(appointments)} + ' Total'">0 Total</span>
+        </div>
+
+        <div th:if="${#lists.isEmpty(appointments)}" class="alert alert-info py-3 mb-0">
+            <i class="bi bi-info-circle me-1"></i> No appointments found.
+        </div>
+
+        <div class="table-responsive" th:unless="${#lists.isEmpty(appointments)}">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Assigned Agent</th>
+                        <th>Appointment Date & Time</th>
+                        <th>Notes / Purpose</th>
+                        <th>Status</th>
+                        <th>Status Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="app : ${appointments}">
+                        <td><strong th:text="'#' + ${app.id}">#1</strong></td>
+                        <td>
+                            <strong class="d-block text-dark" th:text="${app.client.name}">Client</strong>
+                            <small class="text-muted" th:text="${app.client.email}">client@example.com</small>
+                        </td>
+                        <td>
+                            <strong class="d-block text-primary" th:text="${app.agent.name}">Agent</strong>
+                            <small class="text-muted" th:text="${app.agent.specialization.displayName}">Spec</small>
+                        </td>
+                        <td>
+                            <div class="fw-semibold" th:text="${#temporals.format(app.appointmentDate, 'MMM dd, yyyy')}">Date</div>
+                            <small class="text-muted" th:text="${app.appointmentTime}">10:30</small>
+                        </td>
+                        <td>
+                            <small class="text-muted text-truncate d-inline-block" style="max-width: 200px;" th:text="${app.notes != null ? app.notes : '-'}">-</small>
+                        </td>
+                        <td>
+                            <span th:if="${app.status.name() == 'CONFIRMED'}" class="badge bg-success">Confirmed</span>
+                            <span th:if="${app.status.name() == 'PENDING'}" class="badge bg-warning text-dark">Pending</span>
+                            <span th:if="${app.status.name() == 'COMPLETED'}" class="badge bg-primary">Completed</span>
+                            <span th:if="${app.status.name() == 'CANCELLED'}" class="badge bg-danger">Cancelled</span>
+                        </td>
+                        <td>
+                            <form th:action="@{'/appointments/' + ${app.id} + '/status'}" method="post" class="d-flex gap-1">
+                                <select name="status" class="form-select form-select-sm" style="width: 130px;">
+                                    <option th:each="st : ${statuses}" th:value="${st}" th:text="${st}" th:selected="${app.status == st}"></option>
+                                </select>
+                                <button type="submit" class="btn btn-outline-primary btn-sm">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

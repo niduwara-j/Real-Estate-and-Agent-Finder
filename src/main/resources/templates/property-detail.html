@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${property.title} + ' - Property Details')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Main Property Images & Info -->
+        <div class="col-lg-8">
+            <div class="custom-card overflow-hidden mb-4">
+                <img th:src="${property.imageUrl}" th:alt="${property.title}" class="w-100" style="max-height: 480px; object-fit: cover;">
+                <div class="p-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                        <span class="badge bg-primary fs-6 fw-semibold px-3 py-2" th:text="${property.propertyType}">VILLA</span>
+                        <div class="property-price fs-3" th:text="'LKR ' + ${#numbers.formatDecimal(property.price, 0, 'COMMA', 0, 'POINT')}">LKR 45,000,000</div>
+                    </div>
+
+                    <h2 class="fw-bold mb-2" th:text="${property.title}">Property Title</h2>
+                    <p class="text-muted"><i class="bi bi-geo-alt text-danger"></i> <span th:text="${property.address} + ', ' + ${property.city} + ', ' + ${property.state}">Address</span></p>
+
+                    <div class="row g-3 py-3 border-top border-bottom my-3 text-center">
+                        <div class="col-4">
+                            <i class="bi bi-door-closed fs-3 text-primary"></i>
+                            <div class="fw-bold fs-5 mt-1" th:text="${property.bedrooms}">4</div>
+                            <div class="small text-muted">Bedrooms</div>
+                        </div>
+                        <div class="col-4 border-start border-end">
+                            <i class="bi bi-droplet fs-3 text-primary"></i>
+                            <div class="fw-bold fs-5 mt-1" th:text="${property.bathrooms}">3</div>
+                            <div class="small text-muted">Bathrooms</div>
+                        </div>
+                        <div class="col-4">
+                            <i class="bi bi-arrows-fullscreen fs-3 text-primary"></i>
+                            <div class="fw-bold fs-5 mt-1" th:text="${property.areaSqFt}">2500</div>
+                            <div class="small text-muted">Sq. Feet</div>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold mb-3">Property Description</h5>
+                    <p class="text-muted leading-relaxed" th:text="${property.description}">Detailed description...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assigned Agent Card & Booking CTA -->
+        <div class="col-lg-4">
+            <div class="custom-card p-4 text-center sticky-top" style="top: 90px;">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-3 px-3 py-1">Listed by Assigned Agent</span>
+                <div class="position-relative d-inline-block mx-auto mb-2">
+                    <img th:src="${agent.profilePicture}" th:alt="${agent.name}" class="agent-avatar">
+                </div>
+                <h5 class="fw-bold mb-1" th:text="${agent.name}">Agent Name</h5>
+                <p class="text-muted small mb-2" th:text="${agent.specialization.displayName}">Residential Specialist</p>
+
+                <div class="mb-3">
+                    <span class="star-rating">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span class="fw-bold text-dark ms-1" th:text="${agent.rating}">4.9</span>
+                    </span>
+                    <span class="text-muted small" th:text="'(' + ${agent.reviewCount} + ' reviews)'">(10)</span>
+                </div>
+
+                <div class="text-start border-top pt-3 mb-4 small">
+                    <div class="mb-2"><i class="bi bi-telephone text-primary me-2"></i><strong>Phone:</strong> <span th:text="${agent.contactNumber}">+94 77 123 4567</span></div>
+                    <div class="mb-2"><i class="bi bi-envelope text-primary me-2"></i><strong>Email:</strong> <span th:text="${agent.email}">agent@example.com</span></div>
+                    <div><i class="bi bi-geo-alt text-primary me-2"></i><strong>Areas:</strong> <span th:text="${agent.serviceAreas}">Colombo, Malabe</span></div>
+                </div>
+
+                <a th:href="@{'/agents/' + ${agent.id}}" class="btn btn-primary w-100 fw-bold py-2 shadow-sm mb-2">
+                    <i class="bi bi-calendar-check"></i> Book Viewing with Agent
+                </a>
+                <a th:href="@{/properties}" class="btn btn-outline-secondary btn-sm w-100">Back to Properties</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Property Catalog')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container my-5">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-extrabold mb-1">Property Catalog</h2>
+            <p class="text-muted small">Explore available real estate listings across prime locations</p>
+        </div>
+        <div th:if="${session.LOGGED_IN_USER != null && session.LOGGED_IN_USER.role.name() == 'AGENT'}">
+            <a th:href="@{/properties/add}" class="btn btn-primary btn-sm fw-semibold rounded-pill px-3">
+                <i class="bi bi-plus-circle"></i> Add Property Listing
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="custom-card p-4 mb-4">
+        <form th:action="@{/properties}" method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold">Search Location / Title</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="keyword" th:value="${keyword}" class="form-control border-start-0" placeholder="e.g. Malabe, Villa, Colombo...">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold">Property Type</label>
+                <select name="type" class="form-select">
+                    <option value="">All Property Types</option>
+                    <option th:each="pt : ${propertyTypes}" th:value="${pt}" th:text="${pt}" th:selected="${selectedType == pt}"></option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold">Sort By Price</label>
+                <select name="sortBy" class="form-select">
+                    <option value="price_asc" th:selected="${selectedSort == 'price_asc'}">Price: Low to High</option>
+                    <option value="price_desc" th:selected="${selectedSort == 'price_desc'}">Price: High to Low</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100 fw-bold rounded-3">
+                    <i class="bi bi-filter"></i> Apply Filters
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Property Grid -->
+    <div th:if="${#lists.isEmpty(properties)}" class="text-center py-5 bg-white rounded-3 border">
+        <i class="bi bi-building-slash fs-1 text-muted d-block mb-2"></i>
+        <h5 class="fw-bold">No Properties Found</h5>
+        <p class="text-muted small">Try adjusting your filters or search keywords.</p>
+        <a th:href="@{/properties}" class="btn btn-outline-primary btn-sm rounded-pill px-3">Reset Filters</a>
+    </div>
+
+    <div class="row g-4" th:unless="${#lists.isEmpty(properties)}">
+        <div class="col-lg-4 col-md-6" th:each="prop : ${properties}">
+            <div class="custom-card h-100 d-flex flex-column">
+                <div class="position-relative">
+                    <img th:src="${prop.imageUrl}" th:alt="${prop.title}" class="property-img">
+                    <span class="badge bg-primary position-absolute top-0 end-0 m-2" th:text="${prop.propertyType}">HOUSE</span>
+                    <span class="badge bg-success position-absolute bottom-0 start-0 m-2" th:text="${prop.status}">FOR_SALE</span>
+                </div>
+
+                <div class="p-4 d-flex flex-column flex-grow-1">
+                    <div class="property-price mb-1" th:text="'LKR ' + ${#numbers.formatDecimal(prop.price, 0, 'COMMA', 0, 'POINT')}">LKR 45,000,000</div>
+                    <h5 class="fw-bold text-truncate mb-1" th:text="${prop.title}">Modern Villa</h5>
+                    <p class="text-muted small mb-3"><i class="bi bi-geo-alt text-danger"></i> <span th:text="${prop.city} + ', ' + ${prop.address}">Malabe</span></p>
+
+                    <div class="d-flex justify-content-between small text-muted border-top pt-2 mt-auto mb-3">
+                        <span><i class="bi bi-door-closed"></i> <span th:text="${prop.bedrooms}">3</span> Beds</span>
+                        <span><i class="bi bi-droplet"></i> <span th:text="${prop.bathrooms}">2</span> Baths</span>
+                        <span><i class="bi bi-arrows-fullscreen"></i> <span th:text="${prop.areaSqFt}">1800</span> sqft</span>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                        <div class="d-flex align-items-center gap-2">
+                            <img th:src="${prop.agent.profilePicture}" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+                            <small class="fw-semibold text-muted text-truncate" style="max-width: 120px;" th:text="${prop.agent.name}">Agent</small>
+                        </div>
+                        <a th:href="@{'/properties/' + ${prop.id}}" class="btn btn-outline-primary btn-sm fw-semibold rounded-3">View Listing</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

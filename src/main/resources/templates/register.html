@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Create an Account')}"></head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="custom-card p-4 p-md-5 shadow-sm">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold">Join Real Estate Agent Finder</h3>
+                    <p class="text-muted small">Choose your account type to get started</p>
+                </div>
+
+                <!-- Tabs for Client vs Agent -->
+                <ul class="nav nav-pills nav-fill mb-4 p-1 bg-light rounded-pill border" id="registerTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active rounded-pill fw-semibold" id="client-tab" data-bs-toggle="tab" data-bs-target="#clientPane" type="button" role="tab">
+                            <i class="bi bi-person"></i> Register as Client
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill fw-semibold" id="agent-tab" data-bs-toggle="tab" data-bs-target="#agentPane" type="button" role="tab">
+                            <i class="bi bi-person-badge"></i> Register as Agent
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="registerTabContent">
+                    <!-- Client Registration Tab -->
+                    <div class="tab-pane fade show active" id="clientPane" role="tabpanel">
+                        <form th:action="@{/register/client}" method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Full Name *</label>
+                                    <input type="text" name="name" class="form-control" placeholder="e.g. John Doe" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Email Address *</label>
+                                    <input type="email" name="email" class="form-control" placeholder="john@example.com" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Password *</label>
+                                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Contact Number *</label>
+                                    <input type="tel" name="contactNumber" class="form-control" placeholder="+94 77 123 4567" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Preferred Property Type</label>
+                                    <select name="preferredPropertyType" class="form-select">
+                                        <option value="">Select Property Type</option>
+                                        <option th:each="pt : ${propertyTypes}" th:value="${pt}" th:text="${pt}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Preferred Location</label>
+                                    <input type="text" name="preferredLocation" class="form-control" placeholder="e.g. Malabe, Colombo">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mt-4 shadow-sm">
+                                <i class="bi bi-check2-circle"></i> Create Client Account
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Agent Registration Tab -->
+                    <div class="tab-pane fade" id="agentPane" role="tabpanel">
+                        <form th:action="@{/register/agent}" method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Full Name *</label>
+                                    <input type="text" name="name" class="form-control" placeholder="e.g. Sarah Johnson" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Email Address *</label>
+                                    <input type="email" name="email" class="form-control" placeholder="agent@realestate.com" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Password *</label>
+                                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Contact Number *</label>
+                                    <input type="tel" name="contactNumber" class="form-control" placeholder="+94 71 234 5678" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">License Number *</label>
+                                    <input type="text" name="licenseNumber" class="form-control" placeholder="e.g. RE-LIC-2026-001" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Specialization *</label>
+                                    <select name="specialization" class="form-select" required>
+                                        <option value="" disabled selected>Select Specialization</option>
+                                        <option th:each="spec : ${specializations}" th:value="${spec}" th:text="${spec.displayName}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Years of Experience *</label>
+                                    <input type="number" name="yearsOfExperience" class="form-control" min="0" max="60" placeholder="e.g. 5" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold small">Service Areas *</label>
+                                    <input type="text" name="serviceAreas" class="form-control" placeholder="e.g. Malabe, Kandy, Colombo" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold small">Professional Bio / Introduction</label>
+                                    <textarea name="bio" rows="3" class="form-control" placeholder="Write a short summary of your background, achievements, and real estate services..."></textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-4 shadow-sm text-dark">
+                                <i class="bi bi-shield-check"></i> Register as Agent (Awaiting Verification)
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 small">
+                    Already registered? <a th:href="@{/login}" class="fw-bold text-primary">Sign in here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

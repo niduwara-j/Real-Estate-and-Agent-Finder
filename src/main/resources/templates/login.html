@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Sign In')}"></head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="custom-card p-4 p-md-5 shadow-sm">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle mb-2" style="width: 55px; height: 55px;">
+                        <i class="bi bi-person-fill-lock fs-3"></i>
+                    </div>
+                    <h3 class="fw-bold">Welcome Back</h3>
+                    <p class="text-muted small">Sign in to your Real Estate platform account</p>
+                </div>
+
+                <form th:action="@{/login}" method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold small">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="name@example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold small">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm mb-3">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </button>
+                </form>
+
+                <!-- Quick Demo Fill Buttons for Testing/Portfolio -->
+                <div class="bg-light p-3 rounded-3 mt-4 border">
+                    <div class="small fw-bold text-muted mb-2 text-uppercase text-center">Quick Demo Logins</div>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-dark text-start d-flex justify-content-between align-items-center" onclick="fillDemo('admin@realestate.com', 'admin123')">
+                            <span><i class="bi bi-shield-lock text-danger"></i> Demo <strong>Admin</strong></span>
+                            <span class="badge bg-secondary">admin@realestate.com</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary text-start d-flex justify-content-between align-items-center" onclick="fillDemo('sarah.agent@realestate.com', 'agent123')">
+                            <span><i class="bi bi-person-badge text-primary"></i> Demo <strong>Agent</strong></span>
+                            <span class="badge bg-primary">sarah.agent@realestate.com</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-success text-start d-flex justify-content-between align-items-center" onclick="fillDemo('client@realestate.com', 'client123')">
+                            <span><i class="bi bi-person text-success"></i> Demo <strong>Client</strong></span>
+                            <span class="badge bg-success">client@realestate.com</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 small">
+                    Don't have an account? <a th:href="@{/register}" class="fw-bold text-primary">Create one now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function fillDemo(email, pass) {
+        document.getElementById('email').value = email;
+        document.getElementById('password').value = pass;
+    }
+</script>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

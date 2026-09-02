@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Security Overview')}"></head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="custom-card p-4 p-md-5 shadow-sm">
+                <div class="mb-4 pb-3 border-bottom">
+                    <span class="badge bg-success-subtle text-success fw-bold px-3 py-2 rounded-pill mb-2">Trust & Safety</span>
+                    <h2 class="fw-extrabold mb-1">Security & Data Protection</h2>
+                    <p class="text-muted small">How we protect your account, communications, and real estate data</p>
+                </div>
+
+                <div class="content leading-relaxed">
+                    <div class="row g-4 my-2">
+                        <div class="col-md-6">
+                            <div class="p-4 bg-light rounded-3 border h-100">
+                                <h5 class="fw-bold mb-2"><i class="bi bi-shield-lock-fill text-primary me-2"></i> Password Hashing</h5>
+                                <p class="small mb-0">Passwords are salted and cryptographically hashed with industry-standard <strong>BCrypt</strong> algorithms before persistence.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 bg-light rounded-3 border h-100">
+                                <h5 class="fw-bold mb-2"><i class="bi bi-person-check-fill text-success me-2"></i> Agent Verification</h5>
+                                <p class="small mb-0">Every agent profile undergoes administrative review and license verification before receiving the trusted green verification badge.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 bg-light rounded-3 border h-100">
+                                <h5 class="fw-bold mb-2"><i class="bi bi-database-lock text-info me-2"></i> Session Security</h5>
+                                <p class="small mb-0">Secure HTTP sessions with automatic invalidation, role-based access control (RBAC), and protected endpoints.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 bg-light rounded-3 border h-100">
+                                <h5 class="fw-bold mb-2"><i class="bi bi-shield-shaded text-warning me-2"></i> Data Integrity</h5>
+                                <p class="small mb-0">ACID-compliant transactions with Spring Data JPA and Hibernate ORM preventing partial or corrupt states.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-3 border-top">
+                        <a th:href="@{/}" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                            <i class="bi bi-arrow-left"></i> Return to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

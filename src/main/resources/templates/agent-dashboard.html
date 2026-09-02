@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Agent Portal')}"></head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Agent Profile Sidebar -->
+        <div class="col-lg-4">
+            <div class="custom-card p-4 text-center">
+                <div class="position-relative d-inline-block mx-auto mb-3">
+                    <img th:src="${currentUser.profilePicture}" th:alt="${currentUser.name}" class="agent-avatar-lg">
+                    <span th:if="${currentUser.verified}" class="position-absolute bottom-0 end-0 bg-success text-white rounded-circle p-2" title="Verified Agent">
+                        <i class="bi bi-check-lg fs-5"></i>
+                    </span>
+                </div>
+                <h4 class="fw-bold mb-1" th:text="${currentUser.name}">Sarah Johnson</h4>
+                <p class="text-primary fw-semibold mb-2" th:text="${currentUser.specialization.displayName}">Residential Specialist</p>
+
+                <div class="d-flex justify-content-center gap-2 mb-3">
+                    <span th:if="${currentUser.verified}" class="badge-verified"><i class="bi bi-patch-check-fill"></i> Verified</span>
+                    <span th:unless="${currentUser.verified}" class="badge-pending"><i class="bi bi-hourglass-split"></i> Awaiting Verification</span>
+                </div>
+
+                <div class="mb-3">
+                    <span class="star-rating fs-5">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span class="fw-bold text-dark ms-1" th:text="${currentUser.rating}">4.9</span>
+                    </span>
+                    <span class="text-muted small" th:text="'(' + ${currentUser.reviewCount} + ' reviews)'">(12)</span>
+                </div>
+
+                <!-- Toggle Availability Form -->
+                <form th:action="@{'/agents/' + ${currentUser.id} + '/toggle-availability'}" method="post" class="mb-3">
+                    <button type="submit" th:class="${currentUser.available} ? 'btn btn-outline-success w-100 fw-bold rounded-pill' : 'btn btn-outline-secondary w-100 fw-bold rounded-pill'">
+                        <i class="bi bi-toggle-on fs-5" th:if="${currentUser.available}"></i>
+                        <i class="bi bi-toggle-off fs-5" th:unless="${currentUser.available}"></i>
+                        <span th:text="${currentUser.available} ? 'Status: Available for Bookings' : 'Status: Unavailable / Busy'">Available</span>
+                    </button>
+                </form>
+
+                <div class="text-start border-top pt-3 small">
+                    <div class="mb-2"><i class="bi bi-award text-primary me-2"></i><strong>License:</strong> <span th:text="${currentUser.licenseNumber}">LIC-001</span></div>
+                    <div class="mb-2"><i class="bi bi-briefcase text-primary me-2"></i><strong>Experience:</strong> <span th:text="${currentUser.yearsOfExperience}">8</span> Years</div>
+                    <div class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i><strong>Service Areas:</strong> <span th:text="${currentUser.serviceAreas}">Malabe</span></div>
+                </div>
+
+                <a th:href="@{'/agents/' + ${currentUser.id}}" class="btn btn-outline-primary btn-sm w-100 fw-semibold mt-3 rounded-pill">
+                    <i class="bi bi-eye"></i> View Public Profile
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content: Pending Queue & Properties -->
+        <div class="col-lg-8">
+            <!-- Incoming Appointment Queue -->
+            <div class="custom-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-0"><i class="bi bi-inbox text-primary"></i> Incoming Appointment Requests</h5>
+                        <small class="text-muted">Pending client requests waiting for your confirmation</small>
+                    </div>
+                    <span class="badge bg-warning text-dark rounded-pill px-3" th:text="${#lists.size(pendingQueue)} + ' Pending'">0 Pending</span>
+                </div>
+
+                <div th:if="${#lists.isEmpty(pendingQueue)}" class="text-center py-4 text-muted bg-light rounded-3">
+                    <i class="bi bi-check2-circle fs-2 text-success d-block mb-1"></i>
+                    <p class="mb-0 small">No pending appointment requests in queue.</p>
+                </div>
+
+                <div class="table-responsive" th:unless="${#lists.isEmpty(pendingQueue)}">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Client</th>
+                                <th>Date & Time</th>
+                                <th>Notes</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="app : ${pendingQueue}">
+                                <td>
+                                    <strong class="d-block" th:text="${app.client.name}">Client Name</strong>
+                                    <small class="text-muted" th:text="${app.client.contactNumber}">+94 77 123 4567</small>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold" th:text="${#temporals.format(app.appointmentDate, 'MMM dd, yyyy')}">Date</div>
+                                    <small class="text-muted" th:text="${app.appointmentTime}">Time</small>
+                                </td>
+                                <td>
+                                    <small class="text-muted text-truncate d-inline-block" style="max-width: 180px;" th:text="${app.notes != null ? app.notes : '-'}">-</small>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <form th:action="@{'/appointments/' + ${app.id} + '/status'}" method="post">
+                                            <input type="hidden" name="status" value="CONFIRMED">
+                                            <button type="submit" class="btn btn-success btn-sm rounded-pill px-3" title="Accept"><i class="bi bi-check-lg"></i> Confirm</button>
+                                        </form>
+                                        <form th:action="@{'/appointments/' + ${app.id} + '/status'}" method="post">
+                                            <input type="hidden" name="status" value="CANCELLED">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-2" title="Decline"><i class="bi bi-x-lg"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- My Property Listings -->
+            <div class="custom-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-building text-primary"></i> My Property Listings</h5>
+                    <a th:href="@{/properties/add}" class="btn btn-primary btn-sm fw-semibold rounded-pill px-3">
+                        <i class="bi bi-plus-circle"></i> Add Property
+                    </a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(myProperties)}" class="text-center py-4 text-muted bg-light rounded-3">
+                    <p class="mb-0 small">You have not published any property listings yet.</p>
+                </div>
+
+                <div class="row g-3" th:unless="${#lists.isEmpty(myProperties)}">
+                    <div class="col-md-6" th:each="prop : ${myProperties}">
+                        <div class="border rounded-3 p-3 d-flex gap-3 align-items-center">
+                            <img th:src="${prop.imageUrl}" class="rounded-3" style="width: 80px; height: 80px; object-fit: cover;">
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h6 class="fw-bold text-truncate mb-1" th:text="${prop.title}">Title</h6>
+                                <div class="property-price small mb-1" th:text="'LKR ' + ${#numbers.formatDecimal(prop.price, 0, 'COMMA', 0, 'POINT')}">Price</div>
+                                <span class="badge bg-success" th:text="${prop.status}">FOR_SALE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>
