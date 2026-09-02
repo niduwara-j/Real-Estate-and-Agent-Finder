@@ -33,9 +33,9 @@ A modern, full-stack enterprise web platform connecting property seekers with ve
 | :---: | :---: |
 | <img src="docs/screenshots/06_client_dashboard.png" width="100%" alt="Client Dashboard"> | <img src="docs/screenshots/07_agent_dashboard.png" width="100%" alt="Agent Dashboard"> |
 
-| 7. Admin Control Center | 8. Dark Mode Luxury Aesthetic |
+| 7. Admin Control Center | 8. Light Mode Luxury Aesthetic |
 | :---: | :---: |
-| <img src="docs/screenshots/08_admin_dashboard.png" width="100%" alt="Admin Dashboard"> | <img src="docs/screenshots/09_dark_mode_theme.png" width="100%" alt="Dark Mode Theme"> |
+| <img src="docs/screenshots/08_admin_dashboard.png" width="100%" alt="Admin Dashboard"> | <img src="docs/screenshots/09_light_mode_theme.png" width="100%" alt="Dark Mode Theme"> |
 
 </details>
 
